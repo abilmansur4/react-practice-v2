@@ -81,6 +81,13 @@ export const AuthProvider = ({ children }) => {
     })
     .catch((error) => {
       console.log(error);
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      setAccessToken(null);
+      setRefreshToken(null);
+      navigate("/login", { replace: true });
     });
     
     // localStorage.removeItem("accessToken");

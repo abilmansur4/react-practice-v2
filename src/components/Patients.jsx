@@ -151,10 +151,11 @@ const Patients = ({ userRole }) => {
   };
 
   // Удаление пациента
-  const deleteUser = (id) => {
-    axios.delete("http://localhost:5000/api/patient/" + id, config)
+  const deleteUser = async (id) => {
+    await axios.delete("http://localhost:5000/api/patient/" + id, config)
     .then((response) => {
-      // console.log(response);
+      const res = getUsers();
+      setUsers(res);
     })
   }
 
@@ -176,9 +177,6 @@ const Patients = ({ userRole }) => {
     setMessage("Пользователь успешно удален!");
     setSeverity("success");
     setOpen(true);
-    // setTimeout(() => {
-    //   navigate(0);
-    // }, 2000);
     getUsers();
   }
 
@@ -354,7 +352,7 @@ const Patients = ({ userRole }) => {
           justifyContent: 'center',
           alignItems: 'center'
         }}
-        count={Math.ceil(users.length / itemsPerPage)}
+        count={Math.ceil(users?.length / itemsPerPage)}
         page={currentPage}
         onChange={handlePageChange}
       />
