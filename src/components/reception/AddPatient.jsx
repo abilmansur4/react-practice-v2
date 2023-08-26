@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Stack, Box, Container, Button, TextField, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import { useAuth } from '../../hook/useAuth';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
@@ -32,6 +36,11 @@ const AddPatient = () => {
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('');
 
+  const [errors, setErrors] = useState({
+    fio: '',
+    applicationDate: ''
+  });
+
   axios.defaults.withCredentials = true;
 
   const navigate = useNavigate();
@@ -61,12 +70,38 @@ const AddPatient = () => {
     setDischargeSend(event.target.checked);
   }
 
+  const handleSource = (event) => {
+    setSource(event.target.value);
+  }
+
   const hospNotifCheckbox = (event) => {
     setHospNotif(event.target.checked);
   }
 
   const receivedByHoDCheckbox = (event) => {
     setReceivedByHoD(event.target.checked);
+  }
+
+  // Form validation
+  const validateForm = (event) => {
+    event.preventDefault();
+
+    let errors = {};
+
+    if (!fio) {
+      errors.fio = "Введите ФИО пациента"
+    } 
+
+    if (!applicationDate) {
+      errors.applicationDate = "Укажите дату обращения"
+    } 
+
+    if (Object.keys(errors).length === 0) {
+      handleSubmit();
+      // console.log('Form submitted');
+    } else {
+      setErrors(errors);
+    }
   }
 
   const handleSubmit = () => {
@@ -85,25 +120,25 @@ const AddPatient = () => {
         napom: hospNotif,
         dateFact: actualArrivalDate,
         postZav: receivedByHoD,
-        dateNapomonaniya: "2023-01-01 18:10:04.083+05",
-        kodMKB: 1,
-        vidOplaty: "default",
-        vidLetchenie: "default",
-        viewPatient: "default",
-        datePriem: "2023-01-01 18:10:04.083+05",
-        dateOtkaz: "2023-01-01 18:10:04.083+05",
+        dateNapomonaniya: null,
+        kodMKB: '',
+        vidOplaty: '',
+        vidLetchenie: '',
+        viewPatient: '',
+        datePriem: null,
+        dateOtkaz: null,
         comment: '',
-        dateOtkaz2: "2023-01-01 18:10:04.083+05",
-        palataNumber: "default",
-        pol: "default",
+        dateOtkaz2: null,
+        palataNumber: '',
+        pol: '',
         kod: '',
-        etap: "default",
-        date1: "2023-01-01 18:10:04.083+05",
-        vypiskaPlan: "2023-01-01 18:10:04.083+05",
-        stol: "default",
-        doctor: "default",
-        vypiskaFact: "2023-01-01 18:10:04.083+05",
-        dopUslugi: "default"
+        etap: '',
+        date1: null,
+        vypiskaPlan: null,
+        stol: '',
+        doctor: '',
+        vypiskaFact: null,
+        dopUslugi: ''
       }, config)
       .then((response) => {
         // console.log(response.data);
@@ -157,10 +192,19 @@ const AddPatient = () => {
       <Box sx={{ width: 560, padding: 4, "bordeRadius": "20px" ,"boxShadow": "0px 4px 35px 0px rgba(0, 0, 0, 0.08)"}}>
         <Stack spacing={2}>
           <Typography variant="h5">Регистрация пациента</Typography>
-          <TextField size="small" className="txtField" label="ФИО" value={fio} variant="outlined" onChange={(e) => setFio(e.target.value)}/>
+          <TextField error={!!errors.fio} helperText={errors.fio} size="small" className="txtField" label="ФИО" value={fio} variant="outlined" onChange={(e) => setFio(e.target.value)}/>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <DemoContainer components={['DatePicker']}>
-              <DatePicker slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата обращения" value={applicationDate} onChange={(newValue) => setApplicationDate(newValue)} />
+              <DatePicker slotProps={
+                { 
+                  textField: { 
+                    size: 'small', 
+                    fullWidth: true, 
+                    error: !!errors?.applicationDate, 
+                    helperText: errors.applicationDate 
+                  } 
+                }
+              } label="Дата обращения" value={applicationDate} onChange={(newValue) => setApplicationDate(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
           <TextField size="small" className="txtField" label="ИИН" value={iin} variant="outlined" onChange={(e) => setIin(e.target.value)}/>
@@ -176,7 +220,19 @@ const AddPatient = () => {
               <DatePicker slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата выписки последней реабилитации(госпитализации)" value={lastRehabDischargeDate} onChange={(newValue) => setLastRehabDischargeDate(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
-          <TextField size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/>
+          {/* <TextField size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/> */}
+          <FormControl fullWidth size="small">
+            <InputLabel id="demo-simple-select-label">Источник</InputLabel>
+            <Select
+              value={source}
+              label="Источник"
+              onChange={handleSource}
+            >
+              <MenuItem value={"Whatsapp"}>Whatsapp</MenuItem>
+              <MenuItem value={"Telegram"}>Telegram</MenuItem>
+              <MenuItem value={"Телефон"}>Телефон</MenuItem>
+            </Select>
+          </FormControl>
           <FormGroup>
             <FormControlLabel control={<Checkbox onChange={dischargeSendCheckbox} size="small" checked={dischargeSend} />} label="Отправка выписки врачу" />
           {/* </FormGroup>
@@ -191,7 +247,7 @@ const AddPatient = () => {
           <FormGroup>
             <FormControlLabel control={<Checkbox onChange={receivedByHoDCheckbox} size="small" checked={receivedByHoD} />} label="Поступившие (Зав. отделению)" />
           </FormGroup>
-          <Button type="submit" variant="contained" onClick={handleSubmit}>Добавить</Button>
+          <Button type="submit" variant="contained" onClick={validateForm}>Добавить</Button>
           <SnackbarComponent 
             open={open} 
             onClose={handleCloseSuccess} 

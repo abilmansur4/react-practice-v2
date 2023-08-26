@@ -22,6 +22,7 @@ import AddPatient from './components/reception/AddPatient';
 // import AdminEditClient from './components/admin/AdminEditClient';
 import Patients from './components/Patients';
 import SwitchEditClient from './components/SwitchEditClient';
+import SwitchViewPatient from './components/SwitchViewPatient';
 
 import { RequireAuth } from "./hoc/RequireAuth";
 import { AuthProvider } from "./hoc/AuthProvider";
@@ -114,6 +115,14 @@ function App() {
           element={
             <RequireAuth>
               <SwitchEditClient userRole={role}/>
+            </RequireAuth>
+          }
+        />
+        <Route 
+          path="/view-patient/:id"
+          element={
+            <RequireAuth>
+              <SwitchViewPatient userRole={role}/>
             </RequireAuth>
           }
         />

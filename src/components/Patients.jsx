@@ -316,24 +316,22 @@ const Patients = ({ userRole }) => {
                 <TableCell>{user.iin}</TableCell>
                 <TableCell>{user.telephone}</TableCell>
                 <TableCell>
-                  {
-                    localStorage.getItem("userRole") != 4 && (
+                  {/* {
+                    localStorage.getItem("userRole") != 4 && ( */}
                       <Tooltip title="Редактировать">
                         <IconButton onClick={() => navigate(`/edit-patient/${user.id}`)}>
                           <EditIcon sx={{ width: 14, height: 14 }} />
                         </IconButton>
                       </Tooltip>
-                    )
-                  }
-                  {
-                    localStorage.getItem("userRole") == 4 && (
-                      <Tooltip title="Посмотреть">
-                        <IconButton onClick={() => navigate(`/edit-patient/${user.id}`)}>
-                          <VisibilityIcon sx={{ width: 14, height: 14 }} />
-                        </IconButton>
-                      </Tooltip>
-                    )
-                  }
+                    {/* )
+                  } */}
+                  
+                  <Tooltip title="Посмотреть">
+                    <IconButton onClick={() => navigate(`/view-patient/${user.id}`)}>
+                      <VisibilityIcon sx={{ width: 14, height: 14 }} />
+                    </IconButton>
+                  </Tooltip>
+                  
                   { localStorage.getItem("userRole") == 3 && 
                   (<Tooltip title="Удалить">
                     <IconButton onClick={() => handleClickOpen(user)}>

@@ -19,7 +19,7 @@ import 'dayjs/locale/ru';
 
 import SnackbarComponent from '../SnackbarComponent';
 
-const ManagerEditClient = ({ user }) => {
+const ManagerEditClient = ({ user, disabled, display }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('');
@@ -123,6 +123,10 @@ const ManagerEditClient = ({ user }) => {
     setHospNotif(event.target.checked);
   }
 
+  const handleSource = (event) => {
+    setSource(event.target.value);
+  }
+
   const receivedByHoDCheckbox = (event) => {
     setReceivedByHoD(event.target.checked);
   }
@@ -216,22 +220,34 @@ const ManagerEditClient = ({ user }) => {
               <TextField disabled size="small" className="txtField" label="Диагноз, примечание" value={diagnosis} variant="outlined" onChange={(e) => setDiagnosis(e.target.value)}/>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата выписки по КМИС" value={dischargeDateByKMIS} onChange={(newValue) => setDischargeDateByKMIS(newValue)} />
+                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата выписки по КМИС" value={dischargeDateByKMIS} onChange={(newValue) => setDischargeDateByKMIS(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата выписки последней реабилитации(госпитализации)" value={lastRehabDischargeDate} onChange={(newValue) => setLastRehabDischargeDate(newValue)} />
+                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата выписки последней реабилитации(госпитализации)" value={lastRehabDischargeDate} onChange={(newValue) => setLastRehabDischargeDate(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
-              <TextField disabled size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/>
+              {/* <TextField disabled size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/> */}
+              <FormControl disabled fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Источник</InputLabel>
+                <Select
+                  value={source}
+                  label="Источник"
+                  onChange={handleSource}
+                >
+                  <MenuItem value={"Whatsapp"}>Whatsapp</MenuItem>
+                  <MenuItem value={"Telegram"}>Telegram</MenuItem>
+                  <MenuItem value={"Телефон"}>Телефон</MenuItem>
+                </Select>
+              </FormControl>
               <FormGroup>
                 <FormControlLabel disabled control={<Checkbox onChange={dischargeSendCheckbox} size="small" checked={dischargeSend} />} label="Отправка выписки врачу" />
                 <FormControlLabel disabled control={<Checkbox onChange={hospNotifCheckbox} size="small"/>} checked={hospNotif} label="Напоминание о госпитализации" />
               </FormGroup>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Факт дата прихода (Приемный покой)" value={actualArrivalDate} onChange={(newValue) => setActualArrivalDate(newValue)} />
+                  <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Факт дата прихода (Приемный покой)" value={actualArrivalDate} onChange={(newValue) => setActualArrivalDate(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
               <FormGroup>
@@ -243,11 +259,11 @@ const ManagerEditClient = ({ user }) => {
             <Stack sx={{ flexGrow: 1 }} spacing={2}> 
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата напоминания о госпитализации" value={hospNotifDate} onChange={(newValue) => setHospNotifDate(newValue)} />
+                  <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата напоминания о госпитализации" value={hospNotifDate} onChange={(newValue) => setHospNotifDate(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
-              <TextField size="small" className="txtField" label="Код МКБ" value={MKBcode} variant="outlined" onChange={(e) => setMKBcode(e.target.value)}/>
-              <FormControl fullWidth size="small">
+              <TextField disabled={disabled} size="small" className="txtField" label="Код МКБ" value={MKBcode} variant="outlined" onChange={(e) => setMKBcode(e.target.value)}/>
+              <FormControl disabled={disabled} fullWidth size="small">
                 <InputLabel id="demo-simple-select-label">Вид оплаты</InputLabel>
                 <Select
                   value={paymentType}
@@ -259,7 +275,7 @@ const ManagerEditClient = ({ user }) => {
                   <MenuItem value={"Платный"}>Платный</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth size="small">
+              <FormControl disabled={disabled} fullWidth size="small">
                 <InputLabel id="demo-simple-select-label">Вид лечения</InputLabel>
                 <Select
                   value={treatmentType}
@@ -271,7 +287,7 @@ const ManagerEditClient = ({ user }) => {
                   <MenuItem value={"Круглосуточный"}>Круглосуточный</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth size="small">
+              <FormControl disabled={disabled} fullWidth size="small">
                 <InputLabel id="demo-simple-select-label">Вид пациента</InputLabel>
                 <Select
                   value={patientType}
@@ -285,16 +301,16 @@ const ManagerEditClient = ({ user }) => {
               </FormControl>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Планируемая дата приема" value={plannedReceiptDate} onChange={(newValue) => setPlannedReceiptDate(newValue)} />
+                  <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Планируемая дата приема" value={plannedReceiptDate} onChange={(newValue) => setPlannedReceiptDate(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DatePicker']}>
-                  <DatePicker slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата отказа" value={rejectionDate} onChange={(newValue) => setRejectionDate(newValue)} />
+                  <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата отказа" value={rejectionDate} onChange={(newValue) => setRejectionDate(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
-              <TextField size="small" className="txtField" label="Комментарии" value={comments} variant="outlined" onChange={(e) => setComments(e.target.value)}/>
-              <Button type="submit" variant="contained" onClick={handleSubmit}>Сохранить</Button>
+              <TextField disabled={disabled} size="small" className="txtField" label="Комментарии" value={comments} variant="outlined" onChange={(e) => setComments(e.target.value)}/>
+              <Button sx={{ display: {display}}} type="submit" variant="contained" onClick={handleSubmit}>Сохранить</Button>
               <SnackbarComponent 
                 open={open} 
                 onClose={handleCloseSuccess} 

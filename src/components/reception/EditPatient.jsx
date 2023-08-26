@@ -13,7 +13,7 @@ import 'dayjs/locale/ru';
 
 import SnackbarComponent from '../SnackbarComponent';
 
-const EditPatient = () => {
+const EditPatient = ({ disabled, display }) => {
   const {id} = useParams();
   const [fio, setFio] = useState('');
   const [applicationDate, setApplicationDate] = useState(null);
@@ -94,9 +94,9 @@ const EditPatient = () => {
     setReceivedByHoD(event.target.checked);
   }
 
-  const handleSubmit = () => {
-    axios
-      .post("http://localhost:5000/api/patient",
+  const handleSubmit = async () => {
+    await axios
+      .put("http://localhost:5000/api/patient/" + id,
       {
         fio: fio,
         dateFirstAt: applicationDate,
@@ -110,38 +110,18 @@ const EditPatient = () => {
         napom: hospNotif,
         dateFact: actualArrivalDate,
         postZav: receivedByHoD,
-        dateNapomonaniya: "2023-07-19 18:10:04.083+05",
-        kodMKB: 1,
-        vidOplaty: "Бесплатный",
-        vidLetchenie: "Дневной",
-        viewPatient: "Самостоятельный",
-        datePriem: "2023-07-19 18:10:04.083+05",
-        dateOtkaz: "2023-07-19 18:10:04.083+05",
-        comment: '',
-        dateOtkaz2: "2023-07-19 18:10:04.083+05",
-        palataNumber: "201",
-        pol: "Мужчина",
-        kod: '',
-        etap: "КС-2",
-        date1: "2023-07-19 18:10:04.083+05",
-        vypiskaPlan: "2023-07-19 18:10:04.083+05",
-        stol: '',
-        doctor: "Doctor1",
-        vypiskaFact: "2023-07-19 18:10:04.083+05",
-        dopUslugi: ''
       }, config)
       .then((response) => {
-        console.log(response.data);
       })
       .catch((error) => {
         // alert(error.response.data.message);
         console.log(error)
       });
 
-    setMessage("Пациент успешно зарегистрирован!");
+    setMessage("Данные успешно обновлены!");
     setSeverity("success");
     setOpen(true);
-    clearFields();
+    // clearFields();
   };
 
 
@@ -179,41 +159,41 @@ const EditPatient = () => {
       <Box sx={{ width: 560, padding: 4, "bordeRadius": "20px" ,"boxShadow": "0px 4px 35px 0px rgba(0, 0, 0, 0.08)"}}>
         <Stack spacing={2}>
           <Typography variant="h5">Регистрация пациента</Typography>
-          <TextField disabled size="small" className="txtField" label="ФИО" value={fio} variant="outlined" onChange={(e) => setFio(e.target.value)}/>
+          <TextField disabled={disabled} size="small" className="txtField" label="ФИО" value={fio} variant="outlined" onChange={(e) => setFio(e.target.value)}/>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <DemoContainer components={['DatePicker']}>
-              <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата обращения" value={applicationDate} onChange={(newValue) => setApplicationDate(newValue)} />
+              <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата обращения" value={applicationDate} onChange={(newValue) => setApplicationDate(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
-          <TextField disabled size="small" className="txtField" label="ИИН" value={iin} variant="outlined" onChange={(e) => setIin(e.target.value)}/>
-          <TextField disabled size="small" className="txtField" label="Телефон" value={phone} variant="outlined" onChange={(e) => setPhone(e.target.value)}/>
-          <TextField disabled size="small" className="txtField" label="Диагноз, примечание" value={diagnosis} variant="outlined" onChange={(e) => setDiagnosis(e.target.value)}/>
+          <TextField disabled={disabled} size="small" className="txtField" label="ИИН" value={iin} variant="outlined" onChange={(e) => setIin(e.target.value)}/>
+          <TextField disabled={disabled} size="small" className="txtField" label="Телефон" value={phone} variant="outlined" onChange={(e) => setPhone(e.target.value)}/>
+          <TextField disabled={disabled} size="small" className="txtField" label="Диагноз, примечание" value={diagnosis} variant="outlined" onChange={(e) => setDiagnosis(e.target.value)}/>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <DemoContainer components={['DatePicker']}>
-              <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата выписки по КМИС" value={dischargeDateByKMIS} onChange={(newValue) => setDischargeDateByKMIS(newValue)} />
+              <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата выписки по КМИС" value={dischargeDateByKMIS} onChange={(newValue) => setDischargeDateByKMIS(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <DemoContainer components={['DatePicker']}>
-              <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Дата выписки последней реабилитации(госпитализации)" value={lastRehabDischargeDate} onChange={(newValue) => setLastRehabDischargeDate(newValue)} />
+              <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Дата выписки последней реабилитации(госпитализации)" value={lastRehabDischargeDate} onChange={(newValue) => setLastRehabDischargeDate(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
-          <TextField disabled size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/>
+          <TextField disabled={disabled} size="small" className="txtField" label="Источник" value={source} variant="outlined" onChange={(e) => setSource(e.target.value)}/>
           <FormGroup>
-            <FormControlLabel control={<Checkbox disabled onChange={dischargeSendCheckbox} size="small" checked={dischargeSend} />} label="Отправка выписки врачу" />
+            <FormControlLabel control={<Checkbox disabled={disabled} onChange={dischargeSendCheckbox} size="small" checked={dischargeSend} />} label="Отправка выписки врачу" />
           {/* </FormGroup>
           <FormGroup> */}
-            <FormControlLabel control={<Checkbox disabled onChange={hospNotifCheckbox} size="small" checked={hospNotif} />} label="Напоминание о госпитализации" />
+            <FormControlLabel control={<Checkbox disabled={disabled} onChange={hospNotifCheckbox} size="small" checked={hospNotif} />} label="Напоминание о госпитализации" />
           </FormGroup>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
             <DemoContainer components={['DatePicker']}>
-              <DatePicker disabled slotProps={{ textField: { size: 'small', fullWidth: true } }} label="Факт дата прихода (Приемный покой)" value={actualArrivalDate} onChange={(newValue) => setActualArrivalDate(newValue)} />
+              <DatePicker disabled={disabled} slotProps={{ textField: { size: 'small', fullWidth: true, error: false } }} label="Факт дата прихода (Приемный покой)" value={actualArrivalDate} onChange={(newValue) => setActualArrivalDate(newValue)} />
             </DemoContainer>
           </LocalizationProvider>
           <FormGroup>
-            <FormControlLabel control={<Checkbox disabled onChange={receivedByHoDCheckbox} size="small" checked={receivedByHoD} />} label="Поступившие (Зав. отделению)" />
+            <FormControlLabel control={<Checkbox disabled={disabled} onChange={receivedByHoDCheckbox} size="small" checked={receivedByHoD} />} label="Поступившие (Зав. отделению)" />
           </FormGroup>
-          {/* <Button type="submit" variant="contained" onClick={handleSubmit}>Добавить</Button> */}
+          <Button sx={{ display: {display} }} type="submit" variant="contained" onClick={handleSubmit}>Сохранить</Button>
           <SnackbarComponent 
             open={open} 
             onClose={handleCloseSuccess} 

@@ -27,7 +27,6 @@ const Main = () => {
 
   const managerData = [
     {title: "Кабинет", link: "/cabinet", image: "/images/profile.svg"},
-    {title: "Библиотека", link: "/cabinet", image: "/images/library.svg"},
     {title: "Пациенты", link: "/patients", image: "/images/process.svg"},
     // {title: "Документооборот", link: "/cabinet", image: "/images/docs.svg"},
     // {title: "Задачи", link: "/cabinet", image: "/images/tasks.svg"},
@@ -37,7 +36,6 @@ const Main = () => {
 
   const therapistData = [
     {title: "Кабинет", link: "/cabinet", image: "/images/profile.svg"},
-    {title: "Библиотека", link: "/cabinet", image: "/images/library.svg"},
     {title: "Пациенты", link: "/patients", image: "/images/process.svg"},
   ]
 
